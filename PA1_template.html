@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Reproducible Research: Peer Assessment 1</title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type="text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Reproducible Research: Peer Assessment 1</h1>
+
+</div>
+
+
+<div id="loading-and-preprocessing-the-data" class="section level2">
+<h2>Loading and preprocessing the data</h2>
+</div>
+<div id="download-file-from-web" class="section level1">
+<h1>download file from web</h1>
+<p>download.file(“<a href="https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip" class="uri">https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip</a>”, destfile = “activity.zip”, mode=“wb”) # unzip data and read unzip(“activity.zip”) stepdata &lt;- read.csv(“activity.csv”, header = TRUE) head(stepdata)</p>
+<div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">
+<h2>What is mean total number of steps taken per day?</h2>
+<p>library(magrittr) library(dplyr)</p>
+<p>databydate &lt;- stepdata %&gt;% select(date, steps) %&gt;% group_by(date) %&gt;% summarize(tsteps= sum(steps)) %&gt;%na.omit() hist(databydate$tsteps, xlab = “Total daily Steps”,main=“Histogram of Total Steps by day”, breaks = 20)</p>
+<p>mean(databydate<span class="math inline">\(tsteps) median(databydate\)</span>tsteps)</p>
+</div>
+<div id="what-is-the-average-daily-activity-pattern" class="section level2">
+<h2>What is the average daily activity pattern?</h2>
+</div>
+</div>
+<div id="time-series-plot" class="section level1">
+<h1>Time series plot</h1>
+<p>library(ggplot2) databyinterval &lt;- stepdata%&gt;% select(interval, steps) %&gt;% na.omit() %&gt;% group_by(interval) %&gt;% summarize(tsteps= mean(steps)) ggplot(databyinterval, aes(x=interval, y=tsteps))+ geom_line()</p>
+</div>
+<div id="the-5-minute-interval-that-on-average-contains-the-maximum-number-of-steps" class="section level1">
+<h1>The 5-minute interval that, on average, contains the maximum number of steps</h1>
+<p>databyinterval[which(databyinterval<span class="math inline">\(tsteps== max(databyinterval\)</span>tsteps)),]</p>
+<div id="imputing-missing-values" class="section level2">
+<h2>Imputing missing values</h2>
+</div>
+</div>
+<div id="calculate-and-report-the-total-number-of-missing-values-in-the-dataset-i.e.-the-total-number-of-rows-with-nas" class="section level1">
+<h1>Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)</h1>
+</div>
+<div id="generate-listing-of-nas" class="section level1">
+<h1>generate listing of NA’s</h1>
+<p>missingVals &lt;- sum(is.na(data)) missingVals</p>
+</div>
+<div id="i-will-use-the-mean-for-that-5--minute-interval-to-replace-all-the-missing-values-in-the-dataset.-at-the-end-i-will-check-if-all-the-nas-have-been-replaced" class="section level1">
+<h1>I will use the mean for that 5 -minute interval to replace all the missing values in the dataset. At the end, I will check if all the NAs have been replaced</h1>
+<p>replacewithmean &lt;- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE)) meandata &lt;- stepdata%&gt;% group_by(interval) %&gt;% mutate(steps= replacewithmean(steps)) head(meandata)</p>
+</div>
+<div id="make-a-histogram-of-the-total-number-of-steps-taken-each-day-and-calculate-and-report-the-mean-and-median-total-number-of-steps-taken-per-day." class="section level1">
+<h1>Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day.</h1>
+<p>FullSummedDataByDay &lt;- aggregate(meandata<span class="math inline">\(steps, by=list(meandata\)</span>date), sum) names(FullSummedDataByDay)[1] =“date” names(FullSummedDataByDay)[2] =“totalsteps” head(FullSummedDataByDay,15)</p>
+</div>
+<div id="summary-of-new-data-mean-median" class="section level1">
+<h1>Summary of new data : mean &amp; median</h1>
+<p>summary(FullSummedDataByDay)</p>
+</div>
+<div id="making-a-histogram" class="section level1">
+<h1>Making a histogram</h1>
+<p>hist(FullSummedDataByDay$totalsteps, xlab = “Steps”, ylab = “Frequency”, main = “Total Daily Steps”, breaks = 20)</p>
+</div>
+<div id="compare-the-mean-and-median-of-old-and-new-data" class="section level1">
+<h1>Compare the mean and median of Old and New data</h1>
+<p>oldmean &lt;- mean(databydate<span class="math inline">\(tsteps, na.rm = TRUE) newmean &lt;- mean(FullSummedDataByDay\)</span>totalsteps) # Old mean and New mean oldmean newmean</p>
+<div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
+<h2>Are there differences in activity patterns between weekdays and weekends?</h2>
+<p>meandata<span class="math inline">\(date &lt;- as.Date(meandata\)</span>date) meandata<span class="math inline">\(weekday &lt;- weekdays(meandata\)</span>date) meandata<span class="math inline">\(weekend &lt;- ifelse(meandata\)</span>weekday==“Saturday” | meandata$weekday==“Sunday”, “Weekend”, “Weekday” )</p>
+<p>library(ggplot2) meandataweekendweekday &lt;- aggregate(meandata<span class="math inline">\(steps , by= list(meandata\)</span>weekend, meandata$interval), na.omit(mean)) names(meandataweekendweekday) &lt;- c(“weekend”, “interval”, “steps”)</p>
+<p>ggplot(meandataweekendweekday, aes(x=interval, y=steps, color=weekend)) + geom_line()+ facet_grid(weekend ~.) + xlab(“Interval”) + ylab(“Mean of Steps”) + ggtitle(“Comparison of Average Number of Steps in Each Interval”)</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
